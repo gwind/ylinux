@@ -418,6 +418,7 @@ if __name__ == '__main__':
 # 在线资源
 # 1. 相关帖子
 #    http://linuxtoy.org/archives/python-ip.html
+#    https://linuxtoy.org/archives/python-qqwry.html
 #    http://ylinux.org/blog/article/106
 # 2. qqwry.dat 下载
 #    http://www.cz88.net/ （官网）
