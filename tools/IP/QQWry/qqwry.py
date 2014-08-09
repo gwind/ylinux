@@ -415,6 +415,15 @@ if __name__ == '__main__':
     main()
 
 
+# 在线资源
+# 1. 相关帖子
+#    http://linuxtoy.org/archives/python-ip.html
+#    http://ylinux.org/blog/article/106
+# 2. qqwry.dat 下载
+#    http://www.cz88.net/ （官网）
+#    https://github.com/jianlee/ylinux/blob/master/tools/IP/QQWry/qqwry.dat.xz
+# 3. 纯真IP库 txt 格式（使用本程序dump）
+#    https://github.com/jianlee/ylinux/blob/master/tools/IP/QQWry/ip.txt.xz
 
 # changelog
 # 时间：2009年5月29日
