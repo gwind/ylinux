@@ -6,7 +6,7 @@ YLinux 社区公开项目
 
 # 联系我们
 
-- 社区： http://ylinux.org
+- 社区： https://ylinux.org
 - 邮件： info@ylinux.org
 - QQ群： Linux与云计算 232629450
 
