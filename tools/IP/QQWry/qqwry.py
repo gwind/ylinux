@@ -104,6 +104,7 @@ import os
 import sys
 import socket
 import codecs
+import mmap
 from struct import pack, unpack
 
 
@@ -139,6 +140,7 @@ class QQWry(object):
     def open_db(self):
         if not self.db:
             self.db = open(self.path, 'rb')
+            self.db = mmap.mmap(self.db.fileno(), 0, access = 1)
         return self.db
 
     def _read_idx(self):
