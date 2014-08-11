@@ -50,13 +50,9 @@ https://linuxtoy.org/archives/python-qqwry.html#comment-331128
     http://linuxtoy.org/archives/python-ip.html#comment-113960
     因为这个时候我已经把得到的字符串变成utf-8编码了，长度会有变化！
 
-## 2014年8月9日 重写程序
 
-1. 实现完整查询纯真IP库.
-2. 可完整dump出所有ip记录，并与纯真官方的查询程序比对正确.
-
-
-# 联系我们
+联系我们
+============
 
 - 社区： https://ylinux.org
 - 邮件： info@ylinux.org
