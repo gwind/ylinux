@@ -345,6 +345,55 @@ class QQWry(object):
             self.db.close()
 
 
+def update_db(dbpath):
+    '''更新 QQWry IP数据库
+
+    参考：https://github.com/lilydjwg/winterpy/blob/master/pylib/QQWry.py
+    '''
+
+    import subprocess
+    import zlib
+
+    copywrite_url = 'http://update.cz88.net/ip/copywrite.rar'
+    data_url = 'http://update.cz88.net/ip/qqwry.rar'
+
+    def decipher_data(key, data):
+        h = bytearray()
+        for b in data[:0x200]:
+            b = ord(b)
+            key *= 0x805
+            key += 1
+            key &= 0xff
+            h.append(key ^ b)
+        return bytes(h) + data[0x200:]
+
+    def unpack_meta(data):
+        # http://microcai.org/2014/05/11/qqwry_dat_download.html
+        (sign, version, _1, size, _, key, text,
+         link) = unpack('<4sIIIII128s128s', data)
+        sign = sign.decode('gb18030')
+        text = text.rstrip(b'\x00').decode('gb18030')
+        link = link.rstrip(b'\x00').decode('gb18030')
+        del data
+        return locals()
+
+    p = subprocess.Popen(['wget', copywrite_url])
+    p.wait()
+    d = open('copywrite.rar', 'rb').read()
+    info = unpack_meta(d)
+
+    p = subprocess.Popen(['wget', data_url])
+    p.wait()
+    d = open('qqwry.rar', 'rb').read()
+    d = decipher_data(info['key'], d)
+    d = zlib.decompress(d)
+
+    open(dbpath, 'w').write(d)
+
+    os.unlink('copywrite.rar')
+    os.unlink('qqwry.rar')
+
+
 def parse_cmd_args():
     '''处理命令行选项
 
@@ -369,6 +418,9 @@ def parse_cmd_args():
 
     group.add_argument("--dump", action="store_true",
                        help="dump all ip information to a file.")
+
+    parser.add_argument("--update-db", action="store_true", default=False,
+                        help="update qqwry.dat")
 
     parser.add_argument("--quite", action="store_true", default=False,
                         help="quite mode.")
@@ -396,10 +448,15 @@ def main():
 
     args = parse_cmd_args()
 
-    # 测试 qqwry.dat 文件
+    ## 是否需要更新
+
+    # 1. 指定更新
+    if args.update_db:
+        update_db(args.dbpath)
+
+    # 2. 没有发现 qqwry.dat
     if not os.path.exists(args.dbpath):
-        print '%s does not exist, use -f to set it.' % args.dbpath
-        sys.exit(1)
+        update_db(args.dbpath)
 
     qqwry = QQWry(args.dbpath)
     if not args.quite:
@@ -433,7 +490,27 @@ if __name__ == '__main__':
     main()
 
 
-# 在线资源
+
+## Changelog
+#
+# 2014年8月11日
+# 根据LinuxToy网友依云(http://lilydjwg.is-programmer.com/)建议：
+# https://linuxtoy.org/archives/python-qqwry.html#comment-331128
+# 更新：
+# 1. 显示版本信息
+# 2. 增加自动更新纯真IP数据库功能
+#
+# 2014年8月9日 重写程序
+# 1. 实现完整查询纯真IP库.
+# 2. 可完整dump出所有ip记录，并与纯真官方的查询程序比对正确.
+#
+# 2009年5月29日
+# 1. 工具下面网友的建议，修改"o += len(cArea) + 1"
+#    http://linuxtoy.org/archives/python-ip.html#comment-113960
+#    因为这个时候我已经把得到的字符串变成utf-8编码了，长度会有变化！
+
+## 在线资源
+#
 # 1. 相关帖子
 #    http://linuxtoy.org/archives/python-ip.html
 #    https://linuxtoy.org/archives/python-qqwry.html
@@ -445,17 +522,8 @@ if __name__ == '__main__':
 #    https://github.com/jianlee/ylinux/blob/master/tools/IP/QQWry/ip.txt.xz
 
 # 其他版本
+#
 # 依云 Python: https://github.com/lilydjwg/winterpy/blob/master/pylib/QQWry.py
 
-# changelog
-# 时间：2009年5月29日
-# 1. 工具下面网友的建议，修改"o += len(cArea) + 1"
-#    http://linuxtoy.org/archives/python-ip.html#comment-113960
-#    因为这个时候我已经把得到的字符串变成utf-8编码了，长度会有变化！
-#
-# 时间：2014年8月9日 重写程序
-# 1. 实现完整查询纯真IP库.
-# 2. 可完整dump出所有ip记录，并与纯真官方的查询程序比对正确.
-
-# contact
+## Contact US
 # https://ylinux.org
