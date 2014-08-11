@@ -26,7 +26,7 @@ Changelog
 2014年8月11日
 -----------------
 
-根据LinuxToy网友依云(http://lilydjwg.is-programmer.com/)建议：
+根据LinuxToy网友依云 ( http://lilydjwg.is-programmer.com/ ) 建议：
 https://linuxtoy.org/archives/python-qqwry.html#comment-331128
 
 更新：
