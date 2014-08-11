@@ -501,6 +501,8 @@ if __name__ == '__main__':
 # 更新：
 # 1. 显示版本信息
 # 2. 增加自动更新纯真IP数据库功能
+# 3. 使用 mmap 操作数据库文件对象，效率提升一倍：
+#    https://linuxtoy.org/archives/python-qqwry.html#comment-331220
 #
 # 2014年8月9日 重写程序
 # 1. 实现完整查询纯真IP库.
