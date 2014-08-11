@@ -133,6 +133,8 @@ class QQWry(object):
         self.db = None
         self.open_db()
         self.idx_start, self.idx_end = self._read_idx()
+        # IP索引总数
+        self.total = (self.idx_end - self.idx_start) / 7 + 1
 
     def open_db(self):
         if not self.db:
@@ -149,6 +151,17 @@ class QQWry(object):
         end = unpack('I', self.db.read(4))[0]
 
         return start, end
+
+    def version(self):
+        '''返回纯真IP库的版本信息
+
+        格式如 "纯真网络2014年8月5日IP数据"
+        '''
+
+        ip_end_offset = self.read_offset(self.idx_end + 4)
+        a_raw, b_raw = self.read_record(ip_end_offset+4)
+
+        return decode_str(a_raw + b_raw)
 
     def read_ip(self, off, seek=True):
         '''读取ip值（4字节整数值）
@@ -316,10 +329,8 @@ class QQWry(object):
 
         # 使用网络字节编码IP地址
         ip = unpack('!I', socket.inet_aton(ip))[0]
-        # IP索引总数，二分法需要
-        total = (self.idx_end - self.idx_start) / 7 + 1
         # 使用 self.find 函数查找ip的索引偏移
-        i = self.find(ip, 0, total - 1)
+        i = self.find(ip, 0, self.total - 1)
         # 得到索引记录
         o = self.idx_start + i * 7
         # 索引记录格式是： 前4字节IP信息+3字节指向IP记录信息的偏移量
@@ -359,6 +370,9 @@ def parse_cmd_args():
     group.add_argument("--dump", action="store_true",
                        help="dump all ip information to a file.")
 
+    parser.add_argument("--quite", action="store_true", default=False,
+                        help="quite mode.")
+
     parser.add_argument('-f', '--dbpath',
                         action="store",
                         default='qqwry.dat',
@@ -388,6 +402,10 @@ def main():
         sys.exit(1)
 
     qqwry = QQWry(args.dbpath)
+    if not args.quite:
+        print qqwry.version()
+        print 'index total: ', qqwry.total
+        print
 
     if args.query:
         for ip in args.query:
@@ -425,6 +443,9 @@ if __name__ == '__main__':
 #    https://github.com/jianlee/ylinux/blob/master/tools/IP/QQWry/qqwry.dat.xz
 # 3. 纯真IP库 txt 格式（使用本程序dump）
 #    https://github.com/jianlee/ylinux/blob/master/tools/IP/QQWry/ip.txt.xz
+
+# 其他版本
+# 依云 Python: https://github.com/lilydjwg/winterpy/blob/master/pylib/QQWry.py
 
 # changelog
 # 时间：2009年5月29日
