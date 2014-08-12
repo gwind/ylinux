@@ -424,8 +424,8 @@ def parse_cmd_args():
     parser.add_argument("--update-db", action="store_true", default=False,
                         help="update qqwry.dat")
 
-    parser.add_argument("--quite", action="store_true", default=False,
-                        help="quite mode.")
+    parser.add_argument("--quiet", action="store_true", default=False,
+                        help="quiet mode.")
 
     parser.add_argument('-f', '--dbpath',
                         action="store",
@@ -461,7 +461,7 @@ def main():
         update_db(args.dbpath)
 
     qqwry = QQWry(args.dbpath)
-    if not args.quite:
+    if not args.quiet:
         print qqwry.version()
         print 'index total: ', qqwry.total
         print
